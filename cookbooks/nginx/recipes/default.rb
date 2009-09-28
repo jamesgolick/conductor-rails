@@ -49,16 +49,10 @@ template "nginx.conf" do
   mode 0644
 end
 
-template "#{node[:nginx_dir]}/sites-available/default" do
-  source "default-site.erb"
-  owner "root"
-  group "root"
-  mode 0644
-end
-
 template "/etc/init.d/nginx" do
   source "nginx-init.erb"
   mode 0755
+  backup false
 end
 
 service "nginx" do
