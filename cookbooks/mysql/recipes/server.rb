@@ -94,6 +94,7 @@ if node[:ec2]
       to mysql_ec2_log_path
     end
 
+    sleep(5)
     service "mysql" do
       supports :status => true, :restart => true, :reload => true
       action :start
