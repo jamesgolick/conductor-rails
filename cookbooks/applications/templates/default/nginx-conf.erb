@@ -1,0 +1,49 @@
+# this is where you define your mongrel clusters. 
+# you need one of these blocks for each cluster
+# and each one needs its own name to refer to it later.
+upstream <%= @app %> {
+  <% (0...@node[:mongrels]).each do |m| -%>
+  server 127.0.0.1:<%= m + 5000 %>;
+  <% end -%>
+}
+
+server {
+  listen   81;
+  server_name  <%= @node[:app_domain] %>;
+
+  access_log  <%= @node[:nginx_log_dir] %>/<%= @app %>.access.log;
+
+  if ($host ~* "www") {
+    rewrite ^(.*)$ http://<%= @node[:app_domain] %>$1 permanent;
+    break;
+  }
+
+  location / {
+    root   <%= @app_root %>;
+    index  index.html index.htm;
+
+    # needed to forward user's IP address to rails
+    proxy_set_header  X-Real-IP  $remote_addr;
+
+    # needed for HTTPS
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect false;
+    proxy_max_temp_file_size 0;
+
+    if (-f $request_filename/index.html) {
+      rewrite (.*) $1/index.html break;
+    }
+
+    if (!-f $request_filename) {
+      proxy_pass http://<%= @app %>;
+      break;
+    }
+  }
+
+  error_page   500 502 503 504  /50x.html;
+  location = /50x.html {
+    root   html;
+  }
+}
+

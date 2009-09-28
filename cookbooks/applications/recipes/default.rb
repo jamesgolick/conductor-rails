@@ -24,6 +24,7 @@ directory "/var/www" do
 end
 
 node[:apps].each do |app|
+  app_root        = "/var/www/#{app}/current/public"
   cap_directories = [
     "/var/www/#{app}",
     "/var/www/#{app}/shared",
@@ -40,6 +41,13 @@ node[:apps].each do |app|
       mode 0755
       recursive true
     end
+  end
+
+  template "/etc/nginx/sites-enabled/#{app}" do
+    source "nginx-conf.erb"
+    mode 0744
+    variables :app      => app,
+              :app_root => app_root
   end
 
   logrotate app do
