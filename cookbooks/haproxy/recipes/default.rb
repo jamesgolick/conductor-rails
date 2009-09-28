@@ -21,6 +21,10 @@ package "haproxy" do
   action :install
 end
 
+template "/etc/default/haproxy" do
+  source "haproxy-default.erb"
+end
+
 service "haproxy" do
   supports :restart => true, :reload => true
   action   :enable
