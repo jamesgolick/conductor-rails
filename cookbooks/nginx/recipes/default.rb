@@ -56,6 +56,11 @@ template "#{node[:nginx_dir]}/sites-available/default" do
   mode 0644
 end
 
+template "/etc/init.d/nginx" do
+  source "nginx-init.erb"
+  mode 0755
+end
+
 service "nginx" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
