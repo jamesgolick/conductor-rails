@@ -93,14 +93,6 @@ if node[:ec2]
       to mysql_ec2_log_path
     end
 
-    execute "sleep for a bit, because mysql sucks at stopping" do
-      command "sleep 120"
-    end
-
-    service "mysql" do
-      action :stop
-    end
-
     service "mysql" do
       supports :status => true, :restart => true, :reload => true
       action :start
