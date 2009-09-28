@@ -57,6 +57,7 @@ node[:apps].each do |app|
     owner    "root"
     group    "root"
     mode     0644
+    variables :app_root => app_root
     notifies :restart, resources(:service => "god")
   end
 

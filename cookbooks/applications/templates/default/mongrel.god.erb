@@ -1,13 +1,13 @@
 (0...<%= @node[:mongrels] %>).each do |i|
   port     = 5000 + i
-  pid_file = File.join("<%= @node[:app_root] %>", "log", "mongrel-#{port}.pid")
+  pid_file = File.join("<%= @app_root %>", "log", "mongrel-#{port}.pid")
   God.watch do |w|
     w.uid           = "<%= @node[:user] %>"
     w.gid           = "<%= @node[:user] %>"
     w.group         = "mongrels"
     w.name          = "mongrel-#{i}"
     w.interval      = 30.seconds # default
-    w.start         = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails start -d -p #{port} -P #{pid_file} -c <%= @node[:app_root] %> --user <%= @node[:user] %> --group <%= @node[:user] %> -e <%= @node[:rails_env] %>"
+    w.start         = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails start -d -p #{port} -P #{pid_file} -c <%= @app_root %> --user <%= @node[:user] %> --group <%= @node[:user] %> -e <%= @node[:rails_env] %>"
     w.stop          = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails stop -P #{pid_file}"
     w.restart       = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails restart -P #{pid_file}"
     w.start_grace   = 10.seconds
