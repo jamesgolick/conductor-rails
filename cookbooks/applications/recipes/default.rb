@@ -53,12 +53,12 @@ node[:apps].each do |app|
   end
 
   template "/etc/god/conf.d/mongrel.god" do
-    source   "mongrel.god.erb"
-    owner    "root"
-    group    "root"
-    mode     0644
-    variables :app_root => app_root
-    notifies :restart, resources(:service => "god")
+    source    "mongrel.god.erb"
+    owner     "root"
+    group     "root"
+    mode      0644
+    variables :app_root => "/var/www/#{app}/current"
+    notifies  :restart, resources(:service => "god")
   end
 
   logrotate app do
