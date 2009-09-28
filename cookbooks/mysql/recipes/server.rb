@@ -56,7 +56,7 @@ if node[:ec2]
     service "mysql" do
       action :stop
     end
-    sleep(10)
+    sleep(40)
     service "mysql" do
       action :stop
     end
