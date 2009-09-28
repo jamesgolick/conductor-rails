@@ -1,0 +1,62 @@
+== chef-deploy
+
+A gem that provides resources and providers for deploying ruby web apps from chef recipes
+
+
+Uses the same directory layout as capistrano and steals the git remote cached deploy strategy 
+from cap and adapts it to work without cap and under chef. Not all options are required but they 
+are all shown here as an example.
+
+ require 'chef-deploy'
+
+ deploy "/data/myrackapp" do
+   repo "git://github.com/engineyard/rack-app.git"
+   branch "HEAD"
+   user "ez"
+   role "app_master"
+   enable_submodules true
+   migrate true
+   migration_command "rake db:migrate"
+   environment "production"
+   shallow_clone true
+   revision '0xbeadbeef'
+   restart_command "touch tmp/restart.txt" # "monit restart all -g foo", etc.
+   action :deploy # or :rollback
+ end
+
+
+Chef-deploy is backwards compatible with capistrano in the fact that it uses the same exact filesystem layout.
+You can deploy with cap on top of a chef-deploy system and visca-versca(sic?).
+
+Chef-deploy hooks:
+
+If you create a APP_ROOT/deploy directory in your app you can place named hook files in there that will be triggered
+at the appropriate times during the deploy. the hooks are defined as follows:
+
+APP_ROOT/
+  deploy/
+    before_migrate.rb
+    before_symlink.rb
+    before_restart.rb
+    after_restart.rb
+
+These scripts will be instance_eval'd in the context of the chef-deploy resource. This means that you will have certain commands and variables available to you in these hooks. For example:
+
+  run "echo 'release_path: #{release_path}' >> #{shared_path}/logs.log"
+  run "echo 'current_path: #{current_path}' >> #{shared_path}/logs.log"
+  run "echo 'shared_path: #{shared_path}' >> #{shared_path}/logs.log"
+  sudo "echo 'sudo works' >> /root/sudo.log"
+
+
+You have access to a run command and a sudo command. Both of these will run shell commands, run will run as your normal unix user that the app is deployed as and sudo will run as root for when you need more permissions.
+
+You will have variables like in capistrano:
+
+  release_path: this is the full path to the current release:  /data/appname/releases/12345678
+  shared_path: this is the path to the shared dir: /data/appname/shared
+  current_path: this is the path to the currently symlinked release:  /data/appname/current
+  node:  node is the full chef node object, this will have all of the JSON collected by ohai as well as any custom json you passed into your client run. THis way you can get at *any* data you have available to any of your chef recipes.
+
+Using subversion:
+
+In your deploy block, simply add: scm 'subversion' (as well as svn_username and svn_password, if needed). Obviously, git-specific options like enable_submodules can be removed as they're not applicable.
