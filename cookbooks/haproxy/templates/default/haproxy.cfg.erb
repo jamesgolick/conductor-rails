@@ -1,0 +1,30 @@
+global
+        log 127.0.0.1   local0
+        log 127.0.0.1   local1 notice
+        #log loghost    local0 info
+        maxconn 4096
+        #debug
+        #quiet
+        user haproxy
+        group haproxy
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  forwardfor
+        option  httpclose
+        option  dontlognull
+        retries 3
+        redispatch
+        maxconn 2000
+        contimeout      5000
+        clitimeout      50000
+        srvtimeout      50000
+        
+# Set up application listeners here.
+listen application 0.0.0.0:80
+  balance roundrobin
+  <%- @node[:servers][:app].each do |a| %>
+    server localhost <%= a %>:81 weight 1 check 
+  <%- end %>

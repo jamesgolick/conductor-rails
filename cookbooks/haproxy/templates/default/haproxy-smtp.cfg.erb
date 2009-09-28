@@ -1,0 +1,26 @@
+global
+        log 127.0.0.1   local0
+        log 127.0.0.1   local1 notice
+        maxconn 4096
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        option  redispatch
+        retries 3
+        maxconn 2000
+        contimeout      5000
+        clitimeout      50000
+        srvtimeout      50000
+
+listen smtp :25
+  mode tcp
+  option tcplog
+  balance roundrobin
+
+  <% @node[:servers][:mail].each_with_index do |s,i| -%>
+  server smtp<%= i %> <%= s %>:4651 check
+  <% end -%>
+
