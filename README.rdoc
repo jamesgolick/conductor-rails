@@ -15,6 +15,8 @@ The app server configuration works as follows:
   - Similarly, a /var/www/yourapp/shared/config/database.yml is emitted with db server info for your cluster.
   - Your app gets deployed with chef-deploy. The master app server always tries to migrate.
 
+NOTE: Currently, the first run of the mysql master recipes will fail. If you click deploy again, it will succeed. Still looking in to how to fix this.
+
 == Customization
 
 Certain features are configurable in attributes.rb. For other stuff, like search indexes or work queues, you'll have to fork the repo and implement your own cookbooks.
