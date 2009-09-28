@@ -7,7 +7,7 @@ deploy "/var/www/#{@node[:apps].first}" do
   role              @node[:role]
   environment       @node[:rails_env]
   migrate           true if @node[:master]
-  migration_command "rake db:migrate"
+  migration_command "source /etc/environment && rake db:migrate"
   restart_command   "source /etc/environment && /opt/ruby-enterprise/bin/god restart mongrels" if @node[:role] == "app" && @node[:configured]
   action            :deploy
 end
