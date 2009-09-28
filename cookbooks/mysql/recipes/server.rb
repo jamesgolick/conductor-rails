@@ -56,10 +56,6 @@ if node[:ec2]
     service "mysql" do
       action :stop
     end
-    sleep(40)
-    service "mysql" do
-      action :stop
-    end
     
     execute "install-mysql" do
       command "mv #{mysql_server_path} #{node[:mysql_ec2_path]}"
@@ -95,6 +91,10 @@ if node[:ec2]
 
     link mysql_log_path do
       to mysql_ec2_log_path
+    end
+
+    service "mysql" do
+      action :stop
     end
 
     service "mysql" do
