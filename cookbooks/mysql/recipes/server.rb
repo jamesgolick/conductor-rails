@@ -94,7 +94,7 @@ if node[:ec2]
     end
 
     execute "sleep for a bit, because mysql sucks at stopping" do
-      command "sleep 30"
+      command "sleep 120"
     end
 
     service "mysql" do
