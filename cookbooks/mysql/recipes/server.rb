@@ -93,7 +93,10 @@ if node[:ec2]
       to mysql_ec2_log_path
     end
 
-    sleep(120)
+    execute "sleep for a bit, because mysql sucks at stopping" do
+      command "sleep 30"
+    end
+
     service "mysql" do
       action :stop
     end
