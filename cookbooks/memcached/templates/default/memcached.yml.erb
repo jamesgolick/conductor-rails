@@ -1,0 +1,4 @@
+<%= @node[:rails_env] %>:
+<% @node[:servers][:app].each do |s| -%>
+  - "<%= s %>"
+<% end -%>
