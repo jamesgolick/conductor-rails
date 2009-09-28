@@ -6,6 +6,7 @@ deploy "/var/www/#{@node[:apps].first}" do
   user            @node[:user]
   role            @node[:role]
   environment     @node[:rails_env]
+  migrate         true if @node[:master]
   restart_command "sudo /opt/ruby-enterprise/bin/god restart mongrels" if @node[:role] == "app" && @node[:configured]
   action          :deploy
 end
