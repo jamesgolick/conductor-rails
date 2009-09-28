@@ -55,6 +55,10 @@ template "/etc/init.d/nginx" do
   backup false
 end
 
+file "/etc/nginx/sites-enabled/default" do
+  action :delete
+end
+
 service "nginx" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
