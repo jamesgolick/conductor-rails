@@ -9,7 +9,6 @@
 
 @node[:apps].each do |app|
   user app do
-    gid   app
     home  "/home/#{app}"
     shell "/usr/bin/bash"
   end
