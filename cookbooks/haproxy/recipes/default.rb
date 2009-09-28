@@ -27,7 +27,7 @@ service "haproxy" do
 end
 
 template "/etc/default/haproxy" do
-  source "haproxy.erb"
+  source "haproxy.cfg.erb"
   owner "root"
   group "root"
   mode 0644
