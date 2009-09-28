@@ -19,6 +19,11 @@ The app server configuration works as follows:
 
 Certain features are configurable in attributes.rb. For other stuff, like search indexes or work queues, you'll have to fork the repo and implement your own cookbooks.
 
+== TODO
+
+  - Add more cookbooks (common stuff like delayed_job, sphinx, etc)
+  - Add other deployment strategies (passenger, unicorn, etc)
+
 == Credits
 
 This set of cookbooks was written and is maintained by {James Golick}[http://jamesgolick.com] for use at fetlife.com (NSFW). It is distributable under the terms of the {MIT License}[http://en.wikipedia.org/wiki/MIT_License].
