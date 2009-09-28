@@ -13,6 +13,7 @@ The app server configuration works as follows:
     This way, if an app server gets messed up, you can terminate it, and conductor will reassign a new master for you. Since all the app servers are identical, with load balancers running, they're all ready to become master at any time.
   - Each app server has memcached running, and emits a /var/www/yourapp/shared/config/memcached.yml file with info about all the memcached instances in the cluster.
   - Similarly, a /var/www/yourapp/shared/config/database.yml is emitted with db server info for your cluster.
+  - Your app gets deployed with chef-deploy. The master app server always tries to migrate.
 
 == Customization
 
