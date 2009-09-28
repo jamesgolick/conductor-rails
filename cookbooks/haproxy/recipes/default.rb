@@ -30,7 +30,7 @@ template "/etc/haproxy.cfg" do
   source "haproxy.cfg.erb"
   owner "root"
   group "root"
-  mode 0644
+  mode 0744
   notifies :restart, resources(:service => "haproxy")
 end
 
