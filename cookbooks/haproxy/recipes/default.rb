@@ -26,7 +26,7 @@ service "haproxy" do
   action   :enable
 end
 
-template "/etc/haproxy" do
+template "/etc/haproxy.cfg" do
   source "haproxy.cfg.erb"
   owner "root"
   group "root"
