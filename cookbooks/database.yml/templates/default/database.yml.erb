@@ -1,0 +1,8 @@
+<%= @node[:rails_env] %>:
+  adapter:  mysql
+  encoding: utf8
+  username: <%= @node[:db_username] %>
+  password: <%= @node[:db_password] %>
+  host:     <%= @node[:servers] && @node[:servers][:mysql_master] && @node[:servers][:mysql_master].first %>
+  database: <%= @node[:user] %>_<%= @node[:rails_env] %>
+
