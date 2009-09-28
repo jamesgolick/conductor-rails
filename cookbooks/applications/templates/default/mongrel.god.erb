@@ -1,0 +1,50 @@
+(0...<%= @node[:mongrels] %>).each do |i|
+  port     = 5000 + i
+  pid_file = File.join("<%= @node[:app_root] %>", "log", "mongrel-#{port}.pid")
+  God.watch do |w|
+    w.uid           = "<%= @node[:user] %>"
+    w.gid           = "<%= @node[:user] %>"
+    w.group         = "mongrels"
+    w.name          = "mongrel-#{i}"
+    w.interval      = 30.seconds # default
+    w.start         = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails start -d -p #{port} -P #{pid_file} -c <%= @node[:app_root] %> --user <%= @node[:user] %> --group <%= @node[:user] %> -e <%= @node[:rails_env] %>"
+    w.stop          = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails stop -P #{pid_file}"
+    w.restart       = "/usr/local/bin/ruby /opt/ruby-enterprise/bin/mongrel_rails restart -P #{pid_file}"
+    w.start_grace   = 10.seconds
+    w.restart_grace = 10.seconds
+    w.pid_file      = pid_file
+
+    w.restart_if do |restart|
+      restart.condition(:memory_usage) do |c|
+        c.above = 200.megabytes
+      end
+
+      restart.condition(:cpu_usage) do |c|
+        c.above = 70.percent
+        c.times = 5
+      end
+    end
+
+    w.behavior(:clean_pid_file)
+
+    w.start_if do |start|
+      start.condition(:process_running) do |c|
+        c.interval = 5.seconds
+        c.running = false
+      end
+    end
+
+    # lifecycle
+    w.lifecycle do |on|
+      on.condition(:flapping) do |c|
+        c.to_state = [:start, :restart]
+        c.times = 5
+        c.within = 5.minute
+        c.transition = :unmonitored
+        c.retry_in = 10.minutes
+        c.retry_times = 5
+        c.retry_within = 2.hours
+      end
+    end
+  end
+end

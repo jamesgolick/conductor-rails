@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+gem_package "mongrel"
+
 directory "/var/www" do
   owner node[:user]
   group node[:user]
@@ -48,6 +50,14 @@ node[:apps].each do |app|
     mode 0744
     variables :app      => app,
               :app_root => app_root
+  end
+
+  template "/etc/god/conf.d/mongrel.god" do
+    source   "mongrel.god.erb"
+    owner    "root"
+    group    "root"
+    mode     0644
+    notifies :restart, resources(:service => "god")
   end
 
   logrotate app do
