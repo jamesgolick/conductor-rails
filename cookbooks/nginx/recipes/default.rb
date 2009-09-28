@@ -26,6 +26,12 @@ directory node[:nginx_log_dir] do
   action :create
 end
 
+directory "/etc/nginx/conf.d" do
+  mode 0755
+  owner node[:nginx_user]
+  action :create
+end
+
 %w{nxensite nxdissite}.each do |nxscript|
   template "/usr/sbin/#{nxscript}" do
     source "#{nxscript}.erb"
