@@ -1,0 +1,26 @@
+== Conductor Rails Cookbooks
+
+This is a very basic rails stack for use with {conductor}[http://github.com/giraffesoft/conductor].
+
+The cookbooks use the {chef}[http://www.opscode.com/chef] DSL. For more info about chef, check out the {wiki}[http://wiki.opscode.com/display/chef/Home].
+
+It is capable of configuring a mysql master and app servers.
+
+The app server configuration works as follows:
+
+  - haproxy listens on 80 and balances to other nodes in the cluster, at port 81.
+  - nginx listens on 81 and balances to mongrels, running on ports 5000-5003
+    This way, if an app server gets messed up, you can terminate it, and conductor will reassign a new master for you. Since all the app servers are identical, with load balancers running, they're all ready to become master at any time.
+  - Each app server has memcached running, and emits a /var/www/yourapp/shared/config/memcached.yml file with info about all the memcached instances in the cluster.
+  - Similarly, a /var/www/yourapp/shared/config/database.yml is emitted with db server info for your cluster.
+
+== Customization
+
+Certain features are configurable in attributes.rb. For other stuff, like search indexes or work queues, you'll have to fork the repo and implement your own cookbooks.
+
+== Credits
+
+This set of cookbooks was written and is maintained by {James Golick}[http://jamesgolick.com] for use at fetlife.com (NSFW). It is distributable under the terms of the {MIT License}[http://en.wikipedia.org/wiki/MIT_License].
+
+It contains cookbooks from various places, including {the opscode cookbook repo}[http://github.com/opscode/cookbooks], and {ezmobius/chef-deploy}[http://github.com/ezmobius/chef-deploy]. They are licensed separately from the code written specifically for this package.
+
